@@ -33,8 +33,8 @@ app.use(express.urlencoded({ extended: true }));
 // Rate limiting
 app.use('/api/', apiLimiter);
 
-// Health check endpoint
-app.get('/health', async (_req, res) => {
+// Health check endpoint (with lenient rate limiting)
+app.get('/health', apiLimiter, async (_req, res) => {
   try {
     await pool.query('SELECT 1');
     const redisStatus = redis.status === 'ready' ? 'connected' : 'disconnected';

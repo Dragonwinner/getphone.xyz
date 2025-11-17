@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: getphone-backend-prod
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_MAX_CONNECTIONS: ${DB_MAX_CONNECTIONS:-50}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      CACHE_TTL: ${CACHE_TTL:-3600}
+      API_RATE_LIMIT: ${API_RATE_LIMIT:-100}
+      API_RATE_WINDOW: ${API_RATE_WINDOW:-15}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M

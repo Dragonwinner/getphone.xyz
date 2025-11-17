@@ -1,19 +1,29 @@
 import express from 'express';
+import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import dotenv from 'dotenv';
+import { graphqlHTTP } from 'express-graphql';
 import phonesRouter from './routes/phones.js';
 import brandsRouter from './routes/brands.js';
 import categoriesRouter from './routes/categories.js';
+import authRouter from './routes/auth.js';
+import adminRouter from './routes/admin.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
+import { trackPageView } from './middleware/analytics.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import pool from './config/database.js';
 import redis from './config/redis.js';
+import { schema } from './graphql/schema.js';
+import { resolvers } from './graphql/resolvers.js';
+import websocketService from './services/websocket.js';
+import priceTrackingService from './services/priceTracking.js';
 
 dotenv.config();
 
 const app = express();
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
 
 // Security middleware
@@ -32,6 +42,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
 app.use('/api/', apiLimiter);
+
+// Analytics tracking
+app.use(trackPageView);
+
+// GraphQL endpoint
+app.use('/graphql', graphqlHTTP({
+  schema,
+  rootValue: resolvers,
+  graphiql: process.env.NODE_ENV === 'development',
+}));
 
 // Health check endpoint (with lenient rate limiting)
 app.get('/health', apiLimiter, async (_req, res) => {
@@ -60,16 +80,25 @@ app.get('/health', apiLimiter, async (_req, res) => {
 app.use('/api/phones', phonesRouter);
 app.use('/api/brands', brandsRouter);
 app.use('/api/categories', categoriesRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 
 // Error handling
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Start server
-const server = app.listen(PORT, () => {
+const server = httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`CORS origin: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
+  console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
+  
+  // Initialize WebSocket service
+  websocketService.initialize(httpServer);
+  
+  // Start price tracking service
+  priceTrackingService.startPriceTracking();
 });
 
 // Graceful shutdown

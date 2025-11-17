@@ -2,12 +2,28 @@
 
 React Native mobile application for GetPhone.xyz phone comparison platform.
 
+**Available for both iOS and Android!** Build your own APK file for Android distribution.
+
+## Quick Start
+
+### Android APK Build (No Android Studio Required!)
+
+For quick APK generation, see our detailed guide: **[ANDROID_BUILD_GUIDE.md](./ANDROID_BUILD_GUIDE.md)**
+
+**TL;DR:**
+```bash
+cd mobile
+npm install
+npm run build:android        # Builds release APK
+# APK location: android/app/build/outputs/apk/release/app-release.apk
+```
+
 ## Prerequisites
 
 - Node.js 18+
 - React Native CLI
-- Xcode (for iOS development)
-- Android Studio (for Android development)
+- **For Android:** JDK 17 + Android SDK
+- **For iOS:** Xcode (macOS only)
 
 ## Getting Started
 
@@ -81,15 +97,45 @@ export const API_BASE_URL = 'https://api.getphone.xyz';
 
 ## Building for Production
 
+### Android APK
+
+**Detailed instructions:** See [ANDROID_BUILD_GUIDE.md](./ANDROID_BUILD_GUIDE.md)
+
+**Quick build:**
+```bash
+# Debug APK (for testing)
+npm run build:android:debug
+
+# Release APK (for distribution)
+npm run build:android
+
+# Android App Bundle (for Google Play Store)
+npm run build:android:bundle
+```
+
+**APK Locations:**
+- Debug: `android/app/build/outputs/apk/debug/app-debug.apk`
+- Release: `android/app/build/outputs/apk/release/app-release.apk`
+- Bundle: `android/app/build/outputs/bundle/release/app-release.aab`
+
 ### iOS
 ```bash
 npm run build:ios
 ```
 
-### Android
+**Note:** iOS builds require a Mac with Xcode and an Apple Developer account.
+
+### Installing APK on Android Device
+
+1. **Via ADB (USB):**
 ```bash
-npm run build:android
+adb install android/app/build/outputs/apk/release/app-release.apk
 ```
+
+2. **Via File Transfer:**
+   - Copy APK to device
+   - Open file and install
+   - Enable "Install from Unknown Sources" if prompted
 
 ## Testing
 

@@ -10,6 +10,9 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "build:android": "cd android && ./gradlew assembleRelease",
+    "build:android:debug": "cd android && ./gradlew assembleDebug",
+    "build:android:bundle": "cd android && ./gradlew bundleRelease",
+    "clean:android": "cd android && ./gradlew clean",
     "build:ios": "cd ios && xcodebuild -workspace GetPhone.xcworkspace -scheme GetPhone -configuration Release"
   },
   "dependencies": {

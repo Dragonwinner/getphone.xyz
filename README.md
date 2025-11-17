@@ -1,14 +1,27 @@
 # GetPhone.xyz - Phone Comparison & Affiliate Platform
 
-A modern **full-stack** phone comparison website with Amazon affiliate integration, built with React, TypeScript, Vite, Node.js, PostgreSQL, and Redis.
+A modern **full-stack** phone comparison platform with Amazon affiliate integration, available as both a **website** and **mobile app (Android APK)**.
+
+Built with React, TypeScript, Vite, Node.js, PostgreSQL, and Redis.
+
+## 📱 Platform Availability
+
+- **🌐 Web Application** - Responsive website accessible from any browser
+- **📱 Android Mobile App** - Native Android application (APK format)
+- **🍎 iOS Mobile App** - React Native iOS application (requires Mac for building)
+
+> **For Android users:** See [mobile/ANDROID_BUILD_GUIDE.md](./mobile/ANDROID_BUILD_GUIDE.md) for detailed instructions on building and installing the APK.
 
 ## 🚀 Features
 
 ### Full Stack Architecture
-- **Frontend**: React 18 + TypeScript + Vite
+- **Web Frontend**: React 18 + TypeScript + Vite
+- **Mobile App**: React Native + TypeScript (iOS & Android)
 - **Backend**: Node.js + Express + TypeScript
 - **Database**: PostgreSQL 16 with connection pooling
 - **Cache**: Redis 7 for high-performance caching
+- **Real-time**: WebSocket (Socket.IO) for live updates
+- **API**: REST + GraphQL
 - **Scalability**: Designed to handle millions of users
 
 ### 1. Phone Comparison Tool
